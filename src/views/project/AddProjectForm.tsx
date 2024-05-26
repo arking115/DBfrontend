@@ -1,73 +1,93 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 const AddProjectForm: React.FC = () => {
-    const [name, setName] = useState('');
+    const [projectName, setProjectName] = useState('');
     const [departmentId, setDepartmentId] = useState('');
+    const [description, setDescription] = useState('');
+    const [departments, setDepartments] = useState([]);
     const navigate = useNavigate();
 
-    const handleSubmit = async (event: React.FormEvent) => {
-        event.preventDefault();
-        
-        const requestBody = {
-            name: name,
-            departmentId: departmentId
+    useEffect(() => {
+        // Fetch departments to populate the dropdown
+        fetch('http://localhost:8080/departments')
+            .then(response => response.json())
+            .then(data => setDepartments(data))
+            .catch(error => console.error('Error fetching departments:', error));
+    }, []);
+
+    const handleSubmit = (e: React.FormEvent) => {
+        e.preventDefault();
+
+        const createProjectRequest = {
+            name: projectName,
+            departmentId: departmentId,
+            description: description
         };
 
-        try {
-            const response = await fetch('http://localhost:8080/project/create', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(requestBody)
-            });
-
-            if (response.ok) {
-                const newProject = await response.json();
-                console.log('Project created:', newProject);
-                window.alert('Project created successfully!');
+        fetch('http://localhost:8080/project/create', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(createProjectRequest)
+        })
+            .then(response => {
+                if (response.ok) {
+                    return response.json();
+                }
+                throw new Error('Network response was not ok.');
+            })
+            .then(data => {
+                console.log('Project created successfully:', data);
                 navigate('/');
-            } else {
-                console.error('Failed to create project:', response.statusText);
-            }
-        } catch (error) {
-            console.error('Error:', error);
-        }
+            })
+            .catch(error => console.error('Error creating project:', error));
     };
 
     return (
         <div>
-            <h2>Create a New Project</h2>
+            <h2>Create New Project</h2>
             <form onSubmit={handleSubmit}>
                 <div>
-                    <label>
-                        Project Name:
-                        <input 
-                            type="text" 
-                            value={name} 
-                            onChange={(e) => setName(e.target.value)} 
-                            required 
-                        />
-                    </label>
+                    <label htmlFor="projectName">Project Name:</label>
+                    <input
+                        type="text"
+                        id="projectName"
+                        value={projectName}
+                        onChange={(e) => setProjectName(e.target.value)}
+                        required
+                    />
                 </div>
                 <div>
-                    <label>
-                        Department ID:
-                        <input 
-                            type="text" 
-                            value={departmentId} 
-                            onChange={(e) => setDepartmentId(e.target.value)} 
-                            required 
-                        />
-                    </label>
+                    <label htmlFor="departmentId">Department:</label>
+                    <select
+                        id="departmentId"
+                        value={departmentId}
+                        onChange={(e) => setDepartmentId(e.target.value)}
+                        required
+                    >
+                        <option value="">Select a department</option>
+                        {departments.map(department => (
+                            <option key={department.id} value={department.id}>
+                                {department.name}
+                            </option>
+                        ))}
+                    </select>
                 </div>
                 <div>
-                    <button type="submit">Create Project</button>
+                    <label htmlFor="description">Description:</label>
+                    <textarea
+                        id="description"
+                        value={description}
+                        onChange={(e) => setDescription(e.target.value)}
+                        required
+                    />
                 </div>
+                <button type="submit">Create Project</button>
             </form>
         </div>
     );
-}
+};
 
 export default AddProjectForm;
