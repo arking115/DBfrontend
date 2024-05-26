@@ -39,6 +39,7 @@ const Project: React.FC<ProjectProps> = ({ project }) => {
       <h3>{project.name}</h3>
       <p>{project.description}</p>
       <MemberList members={project.members} />
+      <a href={`/project/${project.id}`} className='show-project-button'>Show Project</a>
     </div>
   );
 };
