@@ -1,0 +1,104 @@
+body {
+  background-color: #000;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  margin: 0;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 30px;
+  max-width: 1142px;
+  padding: 50px 0;
+}
+
+.department-card {
+  overflow: hidden;
+  border-radius: 28px;
+  background-color: #121212;
+  padding: 30px 20px;
+  position: relative;
+  color: #FFF;
+  transition: transform 0.5s ease;
+}
+
+.department-card:hover {
+  transform: scale(1.05);
+}
+
+.department-card-bg {
+  height: 128px;
+  width: 128px;
+  background-color: #f9b234;
+  position: absolute;
+  top: -75px;
+  right: -75px;
+  border-radius: 50%;
+  transition: all 0.5s ease;
+}
+
+.department-card:nth-child(2n) .department-card-bg {
+  background-color: #3ecd5e;
+}
+
+.department-card:nth-child(3n) .department-card-bg {
+  background-color: #e44002;
+}
+
+.department-card:nth-child(4n) .department-card-bg {
+  background-color: #952aff;
+}
+
+.department-card:nth-child(5n) .department-card-bg {
+  background-color: #cd3e94;
+}
+
+.department-card:nth-child(6n) .department-card-bg {
+  background-color: #4c49ea;
+}
+
+.department-card h2 {
+  font-size: 30px;
+  margin: 0 0 25px;
+  z-index: 2;
+  position: relative;
+}
+
+.department-card p {
+  font-size: 18px;
+  z-index: 2;
+  position: relative;
+}
+
+/* Responsive styles */
+@media only screen and (max-width: 979px) {
+  .grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .department-card h2 {
+    font-size: 24px;
+  }
+}
+
+@media only screen and (max-width: 767px) {
+  .grid {
+    width: 96%;
+  }
+}
+
+@media only screen and (max-width: 639px) {
+  .grid {
+    grid-template-columns: 1fr;
+  }
+  .department-card h2 {
+    min-height: 72px;
+    line-height: 1;
+    font-size: 24px;
+  }
+  .department-card p {
+    font-size: 16px;
+  }
+}
