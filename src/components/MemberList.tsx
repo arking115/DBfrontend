@@ -1,14 +1,22 @@
 import React from 'react';
-import Member from './Member';
 import { MemberType } from '../types/types';
+import Member from './Member';
 
-const MemberList: React.FC<{ members: MemberType[] }> = ({ members }) => {
+interface MemberListProps {
+  members: MemberType[];
+  onRemoveMember?: (memberId: number) => void;
+}
+
+const MemberList: React.FC<MemberListProps> = ({ members, onRemoveMember }) => {
   return (
-    <div>
-      {members.map((member) => (
-        <Member key={member.id} member={member} />
+    <ul>
+      {members.map(member => (
+        <li key={member.id}>
+          <Member member={member} />
+          {onRemoveMember && <button onClick={() => onRemoveMember(member.id)}>Remove</button>}
+        </li>
       ))}
-    </div>
+    </ul>
   );
 };
 

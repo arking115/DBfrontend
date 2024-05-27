@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import MemberList from './MemberList';
 import { ProjectType } from '../types/types';
 import "../style/AddButton.css";
+import EditableProject from './EditableProject';
 
 interface ProjectProps {
   project: ProjectType;
@@ -9,6 +10,8 @@ interface ProjectProps {
 
 const Project: React.FC<ProjectProps> = ({ project }) => {
   const [isDeleted, setIsDeleted] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
+  const isProjectPath = location.pathname === `/project/${project.id}`;
 
   const onDelete = async (projectId: number) => {
     try {
@@ -29,9 +32,31 @@ const Project: React.FC<ProjectProps> = ({ project }) => {
     }
   };
 
+  const handleEditing = () => {
+    setIsEditing(true);
+  }
+
   if (isDeleted) {
     return null;
   }
+
+  if (isProjectPath) {
+    return (
+      <div className='project-card'>
+        <button className='delete-button' onClick={() => onDelete(project.id)}>X</button>
+        {isEditing ? (
+          <EditableProject projectId={project.id} />
+        ) : (
+          <>
+            <h3>{project.name}</h3>
+            <p>{project.description}</p>
+            <MemberList members={project.members} />
+            <button type='button' onClick={handleEditing} className='show-project-button'>Edit Project</button>
+          </>
+        )}
+      </div>
+    );
+  }  
 
   return (
     <div className='project-card'>

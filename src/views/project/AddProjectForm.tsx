@@ -75,15 +75,6 @@ const AddProjectForm: React.FC = () => {
                         ))}
                     </select>
                 </div>
-                <div>
-                    <label htmlFor="description">Description:</label>
-                    <textarea
-                        id="description"
-                        value={description}
-                        onChange={(e) => setDescription(e.target.value)}
-                        required
-                    />
-                </div>
                 <button type="submit">Create Project</button>
             </form>
         </div>
