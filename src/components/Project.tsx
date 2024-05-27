@@ -30,6 +30,7 @@ const Project: React.FC<ProjectProps> = ({ project }) => {
     } catch (error) {
       console.error('Error:', error);
     }
+    console.log("delete button clicked")
   };
 
   const handleEditing = () => {
@@ -64,7 +65,9 @@ const Project: React.FC<ProjectProps> = ({ project }) => {
       <h3>{project.name}</h3>
       <p>{project.description}</p>
       <MemberList members={project.members} />
-      <a href={`/project/${project.id}`} className='show-project-button'>Show Project</a>
+      <div className='show-project-button-container'>
+        <a href={`/project/${project.id}`} className='show-project-button'>Show Project</a>
+      </div>
     </div>
   );
 };

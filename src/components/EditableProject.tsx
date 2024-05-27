@@ -32,9 +32,18 @@ const EditableProject: React.FC<EditableProjectProps> = ({ projectId }) => {
     fetchMembers();
   }, [projectId]);
 
-  const updateProject = async (updatedName: string, updatedDescription: string) => {
-    await fetch(`http://localhost:8080/project/update/${projectId}/${updatedName}/${updatedDescription}`, {
-      method: 'POST',
+  const updateName = async (updatedName: string) => {
+    await fetch(`http://localhost:8080/project/update/${projectId}/${updatedName}`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    });
+  };
+
+  const updateDescription = async (updatedDescription: string) => {
+    await fetch(`http://localhost:8080/project/update/${projectId}/${name}/${updatedDescription}`, {
+      method: 'GET',
       headers: {
         'Content-Type': 'application/json'
       }
@@ -44,13 +53,13 @@ const EditableProject: React.FC<EditableProjectProps> = ({ projectId }) => {
   const handleNameChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const newName = e.target.value;
     setName(newName);
-    await updateProject(newName, description);
+    await updateName(newName);
   };
 
   const handleDescriptionChange = async (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     const newDescription = e.target.value;
     setDescription(newDescription);
-    await updateProject(name, newDescription);
+    await updateDescription(newDescription);
   };
 
   const handleAddMember = async (memberId: number) => {
@@ -60,7 +69,6 @@ const EditableProject: React.FC<EditableProjectProps> = ({ projectId }) => {
   };
 
   const handleRemoveMember = async (memberId: number) => {
-    // Make the fetch call to remove the member from the project
     await fetch(`http://localhost:8080/project/remove_member/${projectId}/${memberId}`, {
       method: 'GET', // Use 'DELETE' if the endpoint is set up to handle DELETE requests
       headers: {
@@ -68,23 +76,23 @@ const EditableProject: React.FC<EditableProjectProps> = ({ projectId }) => {
       }
     });
 
-    // Update the local project state to reflect the removal
-    const updatedProject = { 
-      ...project, 
-      members: project!.members.filter(m => m.id !== memberId) 
+    const updatedProject = {
+      ...project,
+      members: project!.members.filter(m => m.id !== memberId)
     } as ProjectType;
-    
+
     setProject(updatedProject);
   };
 
   if (!project) return null;
 
   return (
-    <div>
+    <div className="editable-project">
+      <button className="delete-button" onClick={() => onDelete(project.id)}>X</button>
       <h3>Edit Project</h3>
       <label>
         Name:
-        <input value={name} onChange={handleNameChange} />
+        <input type="text" value={name} onChange={handleNameChange} />
       </label>
       <label>
         Description:
@@ -100,6 +108,7 @@ const EditableProject: React.FC<EditableProjectProps> = ({ projectId }) => {
           ))}
         </select>
       </div>
+      <a href={`/project/${project.id}`} className="show-project-button">Show Project</a>
     </div>
   );
 };
